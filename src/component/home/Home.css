@@ -1,0 +1,22 @@
+.searchField{
+    border: black solid;
+    border-radius: 5px;
+    margin: 2.5px 2px;
+    outline: none;
+    text-align: center;
+    zoom: 2.45;
+}
+.searchBtn{
+    border: black solid;
+    border-radius: 5px;
+    margin: 2.5px 2px;
+    outline: none;
+    text-align: center;
+    zoom: 2.3;
+    transition-duration: .4s;
+
+}
+.searchBtn:hover{
+    background-color: lime;
+    transition-duration: .4s;
+}
