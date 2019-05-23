@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios'
 import Flights from '../flights/Flights'
 import Food from '../food/Food'
 import Crime from '../crime/Crime'
 import Currency from '../currency/Currency'
 import CountryInfo from '../countryInfo/CountryInfo'
 import "./Home.css"
+import { withData } from '../../context/DataProvider';
 
 class Home extends Component {
     constructor() {
@@ -13,9 +13,6 @@ class Home extends Component {
         this.state = {
             destination: "",
             toggle: true,
-            data: [], 
-            currency: [],
-            language: []
         }
     }
 
@@ -32,21 +29,14 @@ class Home extends Component {
     }
     handleSubmit = (e) => {
         e.preventDefault()
-        // this.setState({              //not sure if we should clear search field after searching
-        //     destination: ""
-        // })
-        axios.get(`https://restcountries.eu/rest/v2/name/${this.state.destination}`).then(res=>{
-            this.setState({
-                data: res.data[0],
-                currency: res.data[0].currencies[0],
-                language: res.data[0].languages[0]
-            })
+        this.setState({              //not sure if we should clear search field after searching
+            destination: ""
         })
+        this.props.getCountries(this.state.destination)
         this.toggler()
     }
 
     render() {
-        console.log(this.state.data)
         return (
             <>
                 {this.state.toggle ? 
@@ -87,16 +77,15 @@ class Home extends Component {
                     </form>
                 </div>
                 <div style={{textAlign:"center"}}>
-                <h1>{this.state.data.region}</h1>
                     <Flights/>
                     <CountryInfo 
-                        name={this.state.data.name}
-                        population={this.state.data.population}
-                        language={this.state.language.name}
-                        region={this.state.data.region}
-                        flag={this.state.data.flag}
-                        capital={this.state.data.capital}
-                        currency={this.state.currency.name}
+                        name={this.props.data.name}
+                        population={this.props.data.population}
+                        language={this.props.language.name}
+                        region={this.props.data.region}
+                        flag={this.props.data.flag}
+                        capital={this.props.data.capital}
+                        currency={this.props.currency.name}
                     />
                     <Crime/>
                     <Food/>
@@ -109,4 +98,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default withData(Home);
