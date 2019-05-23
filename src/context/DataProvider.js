@@ -8,23 +8,35 @@ class DataProvider extends Component {
         super()
         this.state = {
             currencyCode: '',
-            currencyExchange: '',
+            currencyExchange: [],
             data: [], 
             currency: [],
-            language: []
+            language: [],
+
+
         }
     }
 
-    getCurrency = () => {
-        axios.get(`https://api.exchangeratesapi.io/latest?base=USD&symbols=${this.state.currencyCode}`).then(res => {
-            console.log(res)
+    getCountries = (destination) => {
+        axios.get(`https://restcountries.eu/rest/v2/name/${destination}`).then(res => {
+            console.log(res.data)
             this.setState({
-                currencyExchange: res.data.rates
+                data: res.data[0],
+                currency: res.data[0].currencies[0],
+                language: res.data[0].languages[0],
+                currencyCode: res.data[0].currencies[0].code
             })
         })
-        .catch(function (error) {
-            window.location.reload()
-        });
+    }
+    getCurrency = () => {
+        axios.get(`https://api.exchangeratesapi.io/latest?base=USD&symbols=${this.state.currencyCode}`).then(res => {
+            console.log(res.data.rates)
+            this.setState({
+                currencyExchange: Math.floor(res.data.rates[this.state.currencyCode])
+            })
+            console.log(this.state.currencyExchange)
+        })
+            .catch(err => console.log(err))
     }
 
     getCountries = (destination) => {
@@ -41,9 +53,11 @@ class DataProvider extends Component {
     render() {
         return (
             <DataContext.Provider value={{
-                getCountries: this.getCountries,
+                ...this.state,
                 getCurrency: this.getCurrency,
-                ...this.state
+                getCountries: this.getCountries,
+
+
             }}>
                 {this.props.children}
 

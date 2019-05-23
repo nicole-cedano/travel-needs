@@ -5,14 +5,14 @@ import Crime from '../crime/Crime'
 import Currency from '../currency/Currency'
 import CountryInfo from '../countryInfo/CountryInfo'
 import "./Home.css"
-import { withData } from '../../context/DataProvider';
+import {withData} from '../../context/DataProvider.js'
 
 class Home extends Component {
     constructor() {
         super()
         this.state = {
             destination: "",
-            toggle: true,
+            toggle: true
         }
     }
 
