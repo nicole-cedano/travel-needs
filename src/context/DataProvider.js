@@ -8,25 +8,47 @@ class DataProvider extends Component {
         super()
         this.state = {
             currencyCode: '',
-            currencyExchange: ''
+            currencyExchange: [],
+            data: [], 
+            currency: [],
+            language: [],
+
 
         }
     }
 
-    getCurrency = () => {
-        axios.get(`https://api.exchangeratesapi.io/latest?base=USD&symbols=${this.state.currencyCode}`).then(res => {
-            console.log(res)
+    getCountries = (destination) => {
+        axios.get(`https://restcountries.eu/rest/v2/name/${destination}`).then(res => {
+            console.log(res.data)
             this.setState({
-                currencyExchange: res.data.rates
+                data: res.data[0],
+                currency: res.data[0].currencies[0],
+                language: res.data[0].languages[0],
+                currencyCode: res.data[0].currencies[0].code
             })
         })
-        .catch(err => () => location.reload, console.log(err))
+    }
+    getCurrency = () => {
+        axios.get(`https://api.exchangeratesapi.io/latest?base=USD&symbols=${this.state.currencyCode}`).then(res => {
+            console.log(res.data.rates)
+            this.setState({
+                currencyExchange: Math.floor(res.data.rates[this.state.currencyCode])
+            })
+            console.log(this.state.currencyExchange)
+        })
+            .catch(err => console.log(err))
     }
 
 
     render() {
         return (
-            <DataContext.Provider value={{}}>
+            <DataContext.Provider value={{
+                ...this.state,
+                getCurrency: this.getCurrency,
+                getCountries: this.getCountries,
+
+
+            }}>
                 {this.props.children}
 
             </DataContext.Provider>
@@ -35,9 +57,9 @@ class DataProvider extends Component {
 }
 
 export const withData = C => props => (
-    <ParkingContext.Consumer>
+    <DataContext.Consumer>
         {value => <C {...props} {...value} />}
-    </ParkingContext.Consumer>
+    </DataContext.Consumer>
 )
 
 export default DataProvider
