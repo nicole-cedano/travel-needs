@@ -39,6 +39,16 @@ class DataProvider extends Component {
             .catch(err => console.log(err))
     }
 
+    getCountries = (destination) => {
+        axios.get(`https://restcountries.eu/rest/v2/name/${destination}`).then(res=>{
+            console.log(res.data)
+            this.setState({
+                data: res.data[0],
+                currency: res.data[0].currencies[0],
+                language: res.data[0].languages[0]
+            })
+        })
+    }
 
     render() {
         return (
